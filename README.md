@@ -1,79 +1,169 @@
-## Proyecto QA Automation - Banco Credicoop
+## Proyecto QA Automation - Test Demo Web
 
-Proyecto de automatización end‑to‑end con **Playwright + TypeScript** para validar el flujo de login del home banking de Banco Credicoop.
+Proyecto de automatización end-to-end con **Playwright + TypeScript**, organizado con **Page Object Model (POM)** para pruebas web sobre:
 
-### Requisitos previos
+- **MercadoLibre** (flujos de búsqueda, compra y categorías)
+- **OrangeHRM** (login y gestión de usuarios en módulo Admin)
 
-- Node.js 18+ instalado
-- npm (incluido con Node)
+## Tecnologías y framework
 
-### Instalación
+- **Node.js + npm** para ejecución y gestión de dependencias.
+- **TypeScript** para tipado estático y mejor mantenibilidad.
+- **Playwright Test** como framework principal de automatización E2E.
+- **Allure** como reporter complementario para reportes avanzados.
+- **dotenv** para cargar variables de entorno (`.env`).
+
+## Requisitos previos
+
+- Node.js 18 o superior.
+- npm (incluido con Node.js).
+
+## Instalación
 
 ```bash
 npm install
+npx playwright install
 ```
 
-Esto instalará Playwright, TypeScript, Allure y demás dependencias de desarrollo.
-
-### Estructura del proyecto
+## Estructura del proyecto
 
 ```text
 .
 ├── pages/
-│   ├── BasePage.ts        # Clase base POM (navegación y utilidades comunes)
-│   └── LoginPage.ts       # Page Object de la pantalla de login
+│   ├── MercadoLibrePage.ts    # Page Object de MercadoLibre
+│   ├── OrangeLoginPage.ts     # Page Object de login OrangeHRM
+│   └── OrangeAdminPage.ts     # Page Object del módulo Admin OrangeHRM
 ├── tests/
-│   └── login.spec.ts      # Casos de prueba de login (TC01–TC05)
+│   ├── mercado-libre/
+│   │   └── ml.spec.ts         # Suite MercadoLibre (TC01-TC04)
+│   └── orange-hrm/
+│       ├── orange-hrm.spec.ts # Suite OrangeHRM (login + admin)
+│       ├── test1.login.spec.ts
+│       └── test2.admin.spec.ts
 ├── utils/
-│   └── constants.ts       # Constantes compartidas (URLs, longitudes, dominios)
-├── playwright.config.ts   # Configuración de Playwright (proyecto Chromium, reporter HTML + Allure)
-├── tsconfig.json          # Configuración TypeScript (paths @pages/* y @utils/*)
-├── package.json           # Scripts npm y dependencias
+│   └── constants.ts           # URLs base y timeouts reutilizables
+├── screenshots/               # Evidencias guardadas por pruebas
+├── playwright.config.ts       # Configuración de Playwright (projects + reporters)
+├── tsconfig.json              # Configuración TypeScript (paths @pages/* y @utils/*)
+├── package.json               # Scripts npm y dependencias
 └── .gitignore
 ```
 
-### Scripts principales (npm)
+> `test1.login.spec.ts` y `test2.admin.spec.ts` están vacíos a propósito para evitar duplicar ejecuciones; los tests activos están centralizados en `orange-hrm.spec.ts`.
 
-- **`npm test`**: Ejecuta todos los tests de Playwright en modo headless.
-- **`npm run test:headed`**: Ejecuta los tests con el navegador visible (útil para debugging visual).
-- **`npm run test:ui`**: Abre la UI de Playwright Test Runner.
-- **`npm run report`**: Abre el reporte HTML generado por Playwright (`playwright-report`).
-- **`npm run allure:generate`**: Genera el reporte de Allure a partir de `allure-results`.
-- **`npm run allure:open`**: Abre el reporte Allure en el navegador.
-- **`npx playwright show-report
+## Configuración actual de Playwright
 
-### Alias de imports (TypeScript)
+- **Projects**:
+  - `MercadoLibre` (`tests/mercado-libre`, baseURL MercadoLibre)
+  - `OrangeHRM` (`tests/orange-hrm`, baseURL OrangeHRM)
+- **Reporters**:
+  - HTML (`playwright-report`)
+  - Allure (`allure-results`)
+  - list (salida en terminal)
+- **Evidencias**:
+  - `trace: on-first-retry`
+  - `screenshot: only-on-failure`
+  - `video: retain-on-failure`
 
-Configurados en `tsconfig.json`:
+## Variables de entorno
 
-- **`@pages/*`** → `pages/*`
-- **`@utils/*`** → `utils/*`
+Opcionalmente puedes crear un archivo `.env` en la raíz para credenciales de OrangeHRM:
 
-Ejemplo:
-
-```ts
-import { LoginPage } from '@pages/LoginPage';
-import { MAX_LENGTH_CLAVE } from '@utils/constants';
+```env
+ORANGE_USER=Admin
+ORANGE_PASS=admin123
 ```
 
-### Diseño de automatización
+Si no existen, los tests usan los valores por defecto definidos en el código.
 
-- **Patrón Page Object Model (POM)**:  
-  `BasePage` y `LoginPage` encapsulan selectores y acciones. Si el banco cambia el front, actualizamos principalmente los Page Objects, manteniendo estables los tests.
+## Comandos útiles de terminal
 
-- **Casos de prueba actuales (`tests/login.spec.ts`)**:  
-  - TC01: Carga de elementos críticos de login.  
-  - TC02: Campo clave enmascarado (`type="password"`).  
-  - TC03: Validación de longitudes máximas (documento y clave).  
-  - TC04: Intento de login vacío (validación frontend).  
-  - TC05: Intento de login inválido (happy path negativo manteniendo al usuario en login).
+### Ejecución de pruebas
 
-Este README está pensado para entrevistas y handover rápido del proyecto de QA Automation.
+- Ejecutar toda la suite:
 
-### Atajos de teclado
+```bash
+npm test
+```
 
-ctrl + f: Para bus car en inpector por xpath, id
+- Ejecutar en modo headed (navegador visible):
 
-npx playwright test --headed
-npx playwright test --grep @or
-npx playwright show-report
+```bash
+npm run test:headed
+```
+
+- Abrir la UI runner de Playwright:
+
+```bash
+npm run test:ui
+```
+
+- Ejecutar solo proyecto MercadoLibre:
+
+```bash
+npx playwright test --project=MercadoLibre
+```
+
+- Ejecutar solo proyecto OrangeHRM:
+
+```bash
+npx playwright test --project=OrangeHRM
+```
+
+- Ejecutar por archivo:
+
+```bash
+npx playwright test tests/mercado-libre/ml.spec.ts
+npx playwright test tests/orange-hrm/orange-hrm.spec.ts
+```
+
+- Ejecutar por tags (`grep`):
+
+```bash
+npx playwright test --grep @ml
+npx playwright test --grep @orange
+npx playwright test --grep @screen
+npx playwright test --grep @test
+```
+
+### Reportes
+
+- Abrir reporte HTML de Playwright:
+
+```bash
+npm run report
+```
+
+- Generar reporte Allure:
+
+```bash
+npm run allure:generate
+```
+
+- Abrir reporte Allure:
+
+```bash
+npm run allure:open
+```
+
+## Casos cubiertos (resumen)
+
+- **MercadoLibre**:
+  - Búsqueda de producto.
+  - Selección de primer resultado e intento de compra.
+  - Agregado al carrito.
+  - Navegación por categorías hasta tienda Samsung.
+
+- **OrangeHRM**:
+  - Login exitoso.
+  - Login por teclado (accesibilidad).
+  - Recuperación de contraseña.
+  - Casos negativos de login (data-driven).
+  - Módulo Admin: cambio de estado, filtro y eliminación de usuario.
+
+## Buenas prácticas implementadas
+
+- Uso de **POM** para desacoplar tests de selectores.
+- Reutilización de constantes y timeouts en `utils/constants.ts`.
+- Evidencias automáticas con screenshot/video/trace en escenarios de falla.
+- Soporte de credenciales por entorno con `.env`.
