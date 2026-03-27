@@ -10,7 +10,7 @@ test.describe('Modulo Login - Web @orange', () => {
     await loginPage.gotoLogin();
   });
 
-  test('TC01: Login exitoso', async ({ page }) => {
+  test('TC01: Login exitoso @screen', async ({ page }) => {
     await page.waitForTimeout(2000);
     await loginPage.login(
       process.env.ORANGE_USER ?? 'Admin',
@@ -79,7 +79,7 @@ test.describe('Módulo Admin - Gestión de Usuarios @orange @test', () => {
     await expect(page).toHaveURL(/.*dashboard/);
   });
 
-  test('TC07: Cambiar estado de usuario a Disabled', async ({ page }) => {
+  test('TC07: Cambiar estado de usuario a Disabled @screen', async ({ page }) => {
     // 1. Navegar al menú lateral "Admin"
     await adminPage.gotoAdmin();
 
@@ -131,7 +131,7 @@ test.describe('Módulo Admin - Gestión de Usuarios @orange @test', () => {
     console.log('Se procesó 1 registro correctamente.');
   });
 
-/*   test('TC10: Eliminar el segundo usuario de la lista @or', async ({ page }) => {
+  test('TC10: Eliminar el segundo usuario de la lista @screen', async ({ page }) => {
     // 1. Navegar al menú lateral "Admin"
     await adminPage.gotoAdmin();
 
@@ -148,5 +148,5 @@ test.describe('Módulo Admin - Gestión de Usuarios @orange @test', () => {
     await page.screenshot({ path: 'screenshots/usuario-eliminado.png', fullPage: true });
     await expect(toastExito).toContainText('Successfully Deleted');
     await page.waitForTimeout(2000);
-  }); */
+  });
 });
