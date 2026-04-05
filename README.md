@@ -7,7 +7,7 @@ Suite de pruebas end-to-end con **Playwright** y **TypeScript**, pensada como **
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
-**Aplicaciones bajo prueba:** [MercadoLibre](https://www.mercadolibre.com/) (flujos de búsqueda, carrito y categorías) y **OrangeHRM** (login, accesibilidad por teclado y módulo Admin).
+**Aplicaciones bajo prueba:** **OrangeHRM** (login, accesibilidad por teclado y módulo Admin) y [MercadoLibre](https://www.mercadolibre.com/) (flujos de búsqueda, carrito y categorías).
 
 ---
 
